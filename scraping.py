@@ -6,11 +6,14 @@ from bs4 import BeautifulSoup
 if len(sys.argv) >= 2:
 	url = sys.argv[1]
 	html = urllib.urlopen(url).read()
-	soup = BeautifulSoup(html)
-	text = soup.find_all('aside', attrs={ 'class': "widget widget_srmgmap_widget"})
-	print text
-	latlng = re.findall(r"\d+\.\d+,-*\d+\.\d+", str(text[0]))
-	print latlng
+	soup = BeautifulSoup(html, "html.parser")
+	result = soup.find_all('aside', attrs={ 'class': "widget widget_srmgmap_widget"})
+	text = ''
+	for tag in result:
+		text += tag.getText()
+
+	latlng = re.findall(r"\d+\.\d+,\s?-?\d+\.\d+", text)
+
 	if len(latlng) > 0:
 		print(latlng[0])
 	else:
